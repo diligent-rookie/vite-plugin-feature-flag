@@ -2,6 +2,9 @@
   "name": "vite-plugin-feature-flag",
   "type": "module",
   "author": "diligent-rookie",
+  "engines": {
+    "node": ">=20.8.1"
+  },
   "scripts": {
     "demo": "pnpm --filter react-demo dev",
     "test": "pnpm -r run test",

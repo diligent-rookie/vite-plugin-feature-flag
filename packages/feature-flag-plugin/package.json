@@ -7,6 +7,9 @@
   "types": "dist/types/index.d.ts",
   "author": "diligent-rookie",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.8.1"
+  },
   "files": [
     "dist"
   ],

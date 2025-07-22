@@ -1,0 +1,38 @@
+{
+  "name": "vite-plugin-feature-flag",
+  "version": "1.0.0",
+  "description": "A Vite plugin for managing feature flags in your code",
+  "main": "dist/cjs/index.js",
+  "module": "dist/esm/index.js",
+  "types": "dist/types/index.d.ts",
+  "author": "diligent-rookie",
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "dev": "pnpm run build:code --watch",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "build": "pnpm run build:code && pnpm run build:types",
+    "build:code": "pnpm run build:cjs && pnpm run build:esm",
+    "build:cjs": "tsc -p tsconfig.cjs.json",
+    "build:esm": "tsc -p tsconfig.esm.json",
+    "build:types": "tsc -p tsconfig.types.json --skipLibCheck",
+    "prepublishOnly": "pnpm run build",
+    "release": "semantic-release"
+  },
+  "keywords": [
+    "vite",
+    "vite-plugin",
+    "feature-flag",
+    "feature-toggle"
+  ],
+  "dependencies": {
+    "@rollup/pluginutils": "^5.1.4",
+    "magic-string": "^0.30.17"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0"
+  }
+}

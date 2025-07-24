@@ -10,7 +10,12 @@
     "test": "pnpm -r run test",
     "prepare": "husky",
     "build": "tsx scripts/build.ts",
-    "clear": "tsx scripts/clear.ts"
+    "clear": "tsx scripts/clear.ts",
+    "lint": "eslint . --ext .js,.ts,.mjs,.cjs,.mts,.cts",
+    "lint:fix": "eslint . --ext .js,.ts,.mjs,.cjs,.mts,.cts --fix",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "type-check": "tsc --noEmit"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.1",

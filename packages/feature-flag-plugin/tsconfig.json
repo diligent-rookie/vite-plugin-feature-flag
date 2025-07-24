@@ -1,19 +1,30 @@
 {
   "compilerOptions": {
-    "target": "ES2020",
-    "moduleResolution": "node",
+    "target": "esnext",
+    "module": "esnext",
+    "allowJs": false,
     "strict": true,
-    "esModuleInterop": true,
+    "moduleResolution": "node",
     "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
-    "rootDir": "src",
+    "noUnusedLocals": true,
+    "experimentalDecorators": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "sourceMap": false,
+    "outDir": "dist",
+    "types": [
+      "vite/client"
+    ],
     "baseUrl": ".",
     "paths": {
-      "*": ["node_modules/*"]
-    },
-    "typeRoots": ["./node_modules/@types"],
-    "declaration": true
+      "vite-plugin-feature-flag/*": ["src/*"],
+      "vite-plugin-feature-flag": ["src"]
+    }
   },
-  "include": ["src"],
-  "exclude": ["node_modules", "dist"]
-} 
+  "include": [
+    "src"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

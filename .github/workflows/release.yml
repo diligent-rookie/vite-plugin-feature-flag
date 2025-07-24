@@ -3,6 +3,11 @@ on:
   push:
     branches: ["main"]
 
+permissions:
+  contents: write
+  issues: write
+  pull-requests: write
+
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -19,7 +24,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - name: Install dependencies
-        run: npm install
+        run: pnpm install
 
       - name: Release
         env:

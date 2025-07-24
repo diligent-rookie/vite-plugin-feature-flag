@@ -9,10 +9,8 @@
     "demo": "pnpm --filter react-demo dev",
     "test": "pnpm -r run test",
     "prepare": "husky",
-    "build": "tsx scripts/build.ts"
-  },
-  "peerDependencies": {
-    "vite": ">=2.6.0"
+    "build": "tsx scripts/build.ts",
+    "clear": "tsx scripts/clear.ts"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^19.8.1",

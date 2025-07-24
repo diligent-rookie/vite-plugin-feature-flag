@@ -16,6 +16,7 @@ interface Comments {
 }
 
 interface FeatureFlagOptions {
+  enforce?: 'pre' | 'post';
   include?: string|string[]|RegExp;
   exclude?: string|string[]|RegExp;
   rules?: Rule[];
@@ -54,8 +55,8 @@ function featureFlagPlugin(options?: FeatureFlagOptions): Plugin {
 
   return {
     name: "vite-plugin-feature-flag",
-    enforce: "pre",
-    transform(code, id) {
+    enforce: options?.enforce === 'post' ? 'post' : 'pre',
+    transform(code: string, id: string) {
       if (!filter(id)) return null;
       
       const s = new MagicString(code);
@@ -74,7 +75,7 @@ function featureFlagPlugin(options?: FeatureFlagOptions): Plugin {
         map
       }
     }
-  }
+  };
 }
 
 export default featureFlagPlugin;

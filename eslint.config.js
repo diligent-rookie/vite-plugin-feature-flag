@@ -5,7 +5,15 @@ import { defineConfig } from 'eslint/config';
 
 export default defineConfig([
   {
-    ignores: ['dist/', 'node_modules/', '.husky/', '*.md'],
+    ignores: [
+      'dist/',
+      'node_modules/',
+      '.husky/',
+      '*.md',
+      'coverage/',
+      '**/coverage/',
+      '**/dist/',
+    ],
   },
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts}'],

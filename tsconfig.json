@@ -11,15 +11,15 @@
     "resolveJsonModule": true,
     "esModuleInterop": true,
     "sourceMap": false,
-    "types": ["node"]
+    "types": ["node"],
+    "jsx": "react-jsx",
+    "lib": ["ES2020", "DOM", "DOM.Iterable"]
   },
   "include": [
     "packages/**/src/**/*",
     "scripts/**/*",
-    "*.js",
+    "examples/**/src/**/*",
     "*.ts",
-    "*.mjs",
-    "*.cjs",
     "*.mts",
     "*.cts"
   ],
@@ -27,6 +27,11 @@
     "node_modules",
     "dist",
     "packages/**/dist",
-    "packages/**/node_modules"
+    "packages/**/node_modules",
+    "*.config.js",
+    "*.config.cjs",
+    "commitlint.config.js",
+    "eslint.config.js",
+    "release.config.cjs"
   ]
 }

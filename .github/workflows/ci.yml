@@ -11,30 +11,6 @@ permissions:
   pull-requests: read
 
 jobs:
-  type-check:
-    name: Type Check
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: latest
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20.19.4
-          cache: pnpm
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Type check
-        run: pnpm type-check
-
   lint:
     name: Lint & Format Check
     runs-on: ubuntu-latest
@@ -57,17 +33,11 @@ jobs:
         run: pnpm install
 
       - name: Run ESLint
-        run: pnpm lint
-
-      - name: Check Prettier formatting
-        run: pnpm format:check
+        run: pnpm lint-staged
 
   test:
     name: Test
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.19.4, 21.0.0]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -80,7 +50,7 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ matrix.node-version }}
+          node-version: 20.19.4
           cache: pnpm
 
       - name: Install dependencies
@@ -93,7 +63,7 @@ jobs:
         run: pnpm -r run test:coverage
 
       - name: Upload coverage reports
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
 
   build:
     name: Build

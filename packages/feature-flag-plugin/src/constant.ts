@@ -10,5 +10,5 @@ export const DEFAULT_RULES = [
     start: '{/* @delete-start */}',
     end: '{/* @delete-end */}',
     fileTypes: ['jsx', 'tsx'],
-  }
-]
+  },
+];

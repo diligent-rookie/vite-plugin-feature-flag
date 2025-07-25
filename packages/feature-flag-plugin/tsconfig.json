@@ -12,19 +12,13 @@
     "esModuleInterop": true,
     "sourceMap": false,
     "outDir": "dist",
-    "types": [
-      "vite/client"
-    ],
+    "types": ["vite/client"],
     "baseUrl": ".",
     "paths": {
       "vite-plugin-feature-flag/*": ["src/*"],
       "vite-plugin-feature-flag": ["src"]
     }
   },
-  "include": [
-    "src"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src"],
+  "exclude": ["node_modules"]
 }

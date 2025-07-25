@@ -1,3 +1,4 @@
+/* eslint-env node */
 module.exports = {
   branches: ['main'],
   plugins: [
@@ -6,6 +7,6 @@ module.exports = {
     '@semantic-release/changelog', // 更新 CHANGELOG.md
     '@semantic-release/npm', // 发布到 npm
     '@semantic-release/github', // 创建 GitHub Release
-    '@semantic-release/git' // 提交 CHANGELOG 和 package.json 更新
-  ]
+    '@semantic-release/git', // 提交 CHANGELOG 和 package.json 更新
+  ],
 };

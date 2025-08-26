@@ -1,0 +1,19 @@
+{
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "dist/index.cjs" },
+          { "path": "dist/index.mjs" },
+          { "path": "dist/index.d.ts" }
+        ],
+        "failComment": false,
+        "successComment": false,
+        "failTitle": "Release failed"
+      }
+    ]
+  ]
+}

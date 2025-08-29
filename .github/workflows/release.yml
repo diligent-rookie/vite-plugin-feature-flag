@@ -15,7 +15,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GH_TOKEN }}
           fetch-depth: 0 # 必须！semantic-release 需要完整历史
 
       - name: Install pnpm
@@ -29,22 +28,11 @@ jobs:
           node-version: 20.19.4
           cache: pnpm
 
-      # 添加调试步骤以检查 secrets
-      - name: Debug secrets
-        run: |
-          echo "GH_TOKEN is set: ${{ secrets.GH_TOKEN != '' }}"
-          echo "NPM_TOKEN is set: ${{ secrets.NPM_TOKEN != '' }}"
-          echo "GH_TOKEN length: ${#GH_TOKEN}"
-          echo "NPM_TOKEN length: ${#NPM_TOKEN}"
-        env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-
       - name: Install dependencies
         run: pnpm install
 
       - name: Release
+        run: npx semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 如果发布到 npm
-        run: npx semantic-release

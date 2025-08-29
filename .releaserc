@@ -1,19 +1,28 @@
 {
-  "branches": ["main", { "name": "beta", "prerelease": "beta" }],
+  "branches": [
+    "main",
+    {
+      "name": "beta",
+      "prerelease": "beta"
+    }
+  ],
   "plugins": [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     [
       "@semantic-release/npm",
       {
-        "pkgRoot": "./packages"
+        "pkgRoot": "./packages/feature-flag-plugin"
       }
     ],
     [
       "@semantic-release/github",
       {
         "assets": [
-          { "path": "dist", "label": "Bundle" }
+          {
+            "path": "dist",
+            "label": "Bundle"
+          }
         ]
       }
     ],
@@ -21,10 +30,13 @@
       "@semantic-release/git",
       {
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
-        "assets": ["packages/*/package.json", "README.md"]
+        "assets": [
+          "packages/feature-flag-plugin/package.json",
+          "README.md"
+        ]
       }
     ]
   ],
   "preset": "conventionalcommits",
-  "tagFormat": "${name}@${version}"
+  "tagFormat": "v${version}"
 }

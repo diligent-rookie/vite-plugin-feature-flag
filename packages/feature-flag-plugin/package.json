@@ -18,6 +18,9 @@
     "url": "git+https://github.com/diligent-rookie/vite-plugin-feature-flag.git",
     "directory": "packages/feature-flag-plugin"
   },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "bugs": {
     "url": "https://github.com/diligent-rookie/vite-plugin-feature-flag/issues"
   },

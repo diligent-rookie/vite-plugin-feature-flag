@@ -5,11 +5,15 @@ on:
       - main
 
 permissions:
-  contents: write # to be able to publish a GitHub release
-  id-token: write # to enable use of OIDC for npm provenance
+  contents: write
 
 jobs:
   release:
+    permissions:
+      contents: write # to be able to publish a GitHub release
+      issues: write # to be able to comment on released issues
+      pull-requests: write # to be able to comment on released pull requests
+      id-token: write # to enable use of OIDC for npm provenance
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -32,7 +36,7 @@ jobs:
         run: pnpm install
 
       - name: Release
-        run: npx semantic-release
+        run: npx semantic-release@24.2.7
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }} # 如果发布到 npm

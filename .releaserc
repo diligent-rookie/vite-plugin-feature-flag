@@ -1,0 +1,30 @@
+{
+  "branches": ["main", { "name": "beta", "prerelease": "beta" }],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    [
+      "@semantic-release/npm",
+      {
+        "pkgRoot": "./packages"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          { "path": "dist", "label": "Bundle" }
+        ]
+      }
+    ],
+    [
+      "@semantic-release/git",
+      {
+        "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
+        "assets": ["packages/*/package.json", "README.md"]
+      }
+    ]
+  ],
+  "preset": "conventionalcommits",
+  "tagFormat": "${name}@${version}"
+}

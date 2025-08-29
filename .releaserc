@@ -12,7 +12,26 @@
     [
       "@semantic-release/changelog",
       {
-        "changelogFile": "packages/feature-flag-plugin/CHANGELOG.md"
+        "changelogFile": "./packages/feature-flag-plugin/CHANGELOG.md"
+      }
+    ],
+    [
+      "@semantic-release/github",
+      {
+        "assets": [
+          {
+            "path": "./packages/feature-flag-plugin/dist",
+            "label": "BUNDLE"
+          },
+          {
+            "path": "README.md",
+            "label": "README"
+          },
+          {
+            "path": "./packages/feature-flag-plugin/CHANGELOG.md",
+            "label": "CHANGELOG"
+          }
+        ]
       }
     ],
     [
@@ -20,7 +39,7 @@
       {
         "message": "chore(release): ${nextRelease.version} [skip ci]\n\n${nextRelease.notes}",
         "assets": [
-          "packages/feature-flag-plugin/package.json",
+          "./packages/feature-flag-plugin/package.json",
           "README.md"
         ]
       }

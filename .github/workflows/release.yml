@@ -6,8 +6,6 @@ on:
 
 permissions:
   contents: write # to be able to publish a GitHub release
-  issues: write # to be able to comment on released issues
-  pull-requests: write # to be able to comment on released pull requests
   id-token: write # to enable use of OIDC for npm provenance
 
 jobs:
@@ -30,6 +28,17 @@ jobs:
         with:
           node-version: 20.19.4
           cache: pnpm
+
+      # 添加调试步骤以检查 secrets
+      - name: Debug secrets
+        run: |
+          echo "GH_TOKEN is set: ${{ secrets.GH_TOKEN != '' }}"
+          echo "NPM_TOKEN is set: ${{ secrets.NPM_TOKEN != '' }}"
+          echo "GH_TOKEN length: ${#GH_TOKEN}"
+          echo "NPM_TOKEN length: ${#NPM_TOKEN}"
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
 
       - name: Install dependencies
         run: pnpm install

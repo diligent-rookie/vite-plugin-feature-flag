@@ -10,9 +10,9 @@
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
     [
-      "@semantic-release/npm",
+      "@semantic-release/changelog",
       {
-        "pkgRoot": "./packages/feature-flag-plugin"
+        "changelogFile": "packages/feature-flag-plugin/CHANGELOG.md"
       }
     ],
     [

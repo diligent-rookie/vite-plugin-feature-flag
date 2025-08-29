@@ -9,13 +9,13 @@
     "demo": "pnpm --filter react-demo dev",
     "test": "pnpm -r run test",
     "prepare": "husky",
-    "build": "tsx scripts/build.ts",
-    "clear": "tsx scripts/clear.ts",
     "lint": "eslint . --ext .js,.ts,.mjs,.cjs,.mts,.cts",
     "lint:fix": "eslint . --ext .js,.ts,.mjs,.cjs,.mts,.cts --fix",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "type-check": "tsc --noEmit"
+    "type-check": "tsc --noEmit",
+    "build": "tsx scripts/build.ts",
+    "clear": "tsx scripts/clear.ts"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org/"
@@ -34,7 +34,15 @@
     "tsx": "^4.20.3",
     "typescript": "^5.0.0",
     "typescript-eslint": "^8.35.1",
-    "vitest": "^1.0.0"
+    "vitest": "^1.0.0",
+    "semantic-release": "^24.2.7",
+    "@semantic-release/changelog": "^6.0.3",
+    "@semantic-release/commit-analyzer": "^13.0.1",
+    "@semantic-release/error": "^4.0.0",
+    "@semantic-release/git": "^10.0.1",
+    "@semantic-release/github": "^11.0.4",
+    "@semantic-release/npm": "^12.0.2",
+    "@semantic-release/release-notes-generator": "^14.0.3"
   },
   "lint-staged": {
     "*.{js,ts,mjs,cjs,mts,cts}": [
@@ -44,13 +52,5 @@
     "*.{json,md,yml,yaml,html,css}": [
       "prettier --write"
     ]
-  },
-  "dependencies": {
-    "@semantic-release/commit-analyzer": "^13.0.1",
-    "@semantic-release/error": "^4.0.0",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^11.0.4",
-    "@semantic-release/npm": "^12.0.2",
-    "@semantic-release/release-notes-generator": "^14.0.3"
   }
 }

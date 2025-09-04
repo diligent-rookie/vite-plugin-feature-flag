@@ -1,5 +1,5 @@
 import { execSync } from 'child_process';
-import { writeFileSync, readFileSync, existsSync } from 'fs';
+import { writeFileSync, readFileSync, existsSync, appendFileSync } from 'fs';
 import { join } from 'path';
 
 interface Commit {
@@ -61,17 +61,17 @@ function getCommits(fromTag?: string): Commit[] {
   if (fromTag) {
     command += ` ${fromTag}..HEAD`;
   }
-  
+
   const output = executeCommand(command);
   if (!output) return [];
-  
+
   return output.split('\n')
     .filter(line => line.trim())
     .map(line => {
       const [hash, ...messageParts] = line.split(' ');
       const message = messageParts.join(' ');
       const conventionalMatch = message.match(/^(\w+)(?:\(([^)]+)\))?:\s*(.*)$/);
-      
+
       if (conventionalMatch) {
         const [, type, scope, commitMessage] = conventionalMatch;
         return {
@@ -81,7 +81,7 @@ function getCommits(fromTag?: string): Commit[] {
           scope: scope || undefined
         };
       }
-      
+
       return {
         hash: hash.substring(0, 7),
         message,
@@ -92,7 +92,7 @@ function getCommits(fromTag?: string): Commit[] {
 
 function categorizeCommits(commits: Commit[]): Record<string, Commit[]> {
   const categorized: Record<string, Commit[]> = {};
-  
+
   for (const commit of commits) {
     // @ts-expect-error expectation
     const type = CONVENTIONAL_TYPES.includes(commit.type) ? commit.type : 'other';
@@ -101,20 +101,30 @@ function categorizeCommits(commits: Commit[]): Record<string, Commit[]> {
     }
     categorized[type].push(commit);
   }
-  
+
   return categorized;
 }
 
 function calculateNextVersion(latestTag: string | null, commits: Commit[]): string {
   if (!latestTag) return 'v1.0.0';
-  
-  const version = latestTag.startsWith('v') ? latestTag.substring(1) : latestTag;
-  const parts = version.split('.').map(Number);
-  if (parts.length < 3) {
+
+  const raw = latestTag.startsWith('v') ? latestTag.substring(1) : latestTag;
+  // 去掉预发布/构建信息，例如 1.2.3-beta.1+build.5 -> 1.2.3
+  const base = raw.split('-')[0].split('+')[0];
+
+  const parts = base.split('.');
+  if (parts.length !== 3) {
     throw new Error(`Invalid version format: ${latestTag}`);
   }
-  const [major, minor, patch] = parts;
-  
+
+  const major = Number(parts[0]);
+  const minor = Number(parts[1]);
+  const patch = Number(parts[2]);
+
+  if ([major, minor, patch].some(n => Number.isNaN(n))) {
+    throw new Error(`Invalid version numbers after normalization: ${latestTag}`);
+  }
+
   const hasFeatures = commits.some(commit => commit.type === 'feat');
   const hasFixes = commits.some(commit => commit.type === 'fix');
   const hasBreaking = commits.some(commit => commit.message.includes('!:'));
@@ -126,7 +136,7 @@ function calculateNextVersion(latestTag: string | null, commits: Commit[]): stri
   } else if (hasFixes) {
     return `v${major}.${minor}.${patch + 1}`;
   }
-  
+
   return `v${major}.${minor}.${patch}`;
 }
 
@@ -140,13 +150,13 @@ function generateChangelogEntry(version: string, commits: Commit[]): ChangelogEn
 
 function formatChangelogEntry(entry: ChangelogEntry): string {
   let content = `## [${entry.version}] - ${entry.date}\n\n`;
-  
+
   for (const [type, commits] of Object.entries(entry.changes)) {
     if (commits.length === 0) continue;
-    
+
     const title = TYPE_MAPPINGS[type] || 'Other';
     content += `### ${title}\n\n`;
-    
+
     for (const commit of commits) {
       if (commit.scope) {
         content += `- **${commit.scope}**: ${commit.message} (${commit.hash})\n`;
@@ -156,7 +166,7 @@ function formatChangelogEntry(entry: ChangelogEntry): string {
     }
     content += '\n';
   }
-  
+
   return content;
 }
 
@@ -188,12 +198,12 @@ function generateLinks(version: string, previousTag?: string): string {
 
 function updateChangelogFile(filePath: string, newEntry: string, version: string, previousTag?: string) {
   let content = readChangelog(filePath);
-  
+
   // 如果是新文件，添加标题
   if (!content || content.trim() === '') {
     content = `# Changelog\n\nAll notable changes to this project will be documented in this file.\n\nThe format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).\n\n`;
   }
-  
+
   // 添加版本比较链接
   let links = '';
   const lines = content.split('\n');
@@ -201,19 +211,19 @@ function updateChangelogFile(filePath: string, newEntry: string, version: string
   while (lastLineIndex >= 0 && lines[lastLineIndex] === '') {
     lines.pop();
   }
-  
+
   // 检查是否已存在链接部分
   const lastLine = lines[lines.length - 1];
   if (lastLine && lastLine.startsWith('[')) {
     links = lines.pop() || '';
   }
-  
+
   content = lines.join('\n');
-  
+
   // 在第二行后插入新的 changelog 条目（跳过标题）
   const insertIndex = content.indexOf('\n', content.indexOf('\n') + 1) + 1;
   content = content.slice(0, insertIndex) + newEntry + '\n' + content.slice(insertIndex);
-  
+
   // 添加或更新链接
   const newLink = generateLinks(version, previousTag);
   if (newLink) {
@@ -223,39 +233,44 @@ function updateChangelogFile(filePath: string, newEntry: string, version: string
       links = '\n' + newLink;
     }
   }
-  
+
   content += links + '\n';
-  
+
   writeChangelog(filePath, content);
 }
 
 function main() {
   const changelogPath = join(process.cwd(), 'CHANGELOG.md');
-  
+
   const latestTag = getLatestTag();
-  if(!latestTag){
+  if (!latestTag) {
     console.log('ℹ️  No previous tag found');
     return;
   }
   const commits = getCommits(latestTag);
-  
+
   if (commits.length === 0) {
     console.log('ℹ️  No commits found since last release');
     return;
   }
-  
+
   const nextVersion = calculateNextVersion(latestTag, commits);
   const changelogEntry = generateChangelogEntry(nextVersion, commits);
   const formattedEntry = formatChangelogEntry(changelogEntry);
-  
+
   updateChangelogFile(changelogPath, formattedEntry, nextVersion, latestTag);
-  
-  // 输出供 GitHub Actions 使用的环境变量
-  console.log(`::set-output name=version::${nextVersion}`);
-  console.log(`::set-output name=changelog::${JSON.stringify(formattedEntry)}`);
-  console.log(`::set-output name=tag::${nextVersion}`);
-  
-  // 同时设置环境变量（适用于较新版本的 GitHub Actions）
+
+  const ghOutput = process.env.GITHUB_OUTPUT;
+  if (ghOutput) {
+    const out = [
+      `version=${nextVersion}`,
+      `changelog=${JSON.stringify(formattedEntry)}`,
+      `tag=${nextVersion}`
+    ].join('\n');
+    appendFileSync(ghOutput, out + '\n');
+  }
+
+  // 兼容日志输出
   console.log(`VERSION=${nextVersion}`);
   console.log(`CHANGELOG_ENTRY=${JSON.stringify(formattedEntry)}`);
   console.log(`TAG=${nextVersion}`);

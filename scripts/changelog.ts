@@ -243,11 +243,7 @@ function main() {
   const changelogPath = join(process.cwd(), 'CHANGELOG.md');
 
   const latestTag = getLatestTag();
-  if (!latestTag) {
-    console.log('ℹ️  No previous tag found');
-    return;
-  }
-  const commits = getCommits(latestTag);
+  const commits = getCommits(latestTag || undefined);
 
   if (commits.length === 0) {
     console.log('ℹ️  No commits found since last release');
@@ -258,13 +254,13 @@ function main() {
   const changelogEntry = generateChangelogEntry(nextVersion, commits);
   const formattedEntry = formatChangelogEntry(changelogEntry);
 
-  updateChangelogFile(changelogPath, formattedEntry, nextVersion, latestTag);
+  updateChangelogFile(changelogPath, formattedEntry, nextVersion, latestTag || undefined);
 
   const ghOutput = process.env.GITHUB_OUTPUT;
   if (ghOutput) {
     const out = [
       `version=${nextVersion}`,
-      `changelog=${JSON.stringify(formattedEntry)}`,
+      `changelog=${formattedEntry}`,
       `tag=${nextVersion}`
     ].join('\n');
     appendFileSync(ghOutput, out + '\n');

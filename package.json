@@ -1,5 +1,6 @@
 {
   "name": "vite-plugin-feature-flag",
+  "version": "1.0.0-alpha.2",
   "type": "module",
   "author": "diligent-rookie",
   "engines": {
@@ -46,6 +47,5 @@
     "*.{json,md,yml,yaml,html,css}": [
       "prettier --write"
     ]
-  },
-  "version": "1.0.0-alpha.3"
+  }
 }

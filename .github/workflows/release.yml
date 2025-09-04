@@ -19,7 +19,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0 # 必须！semantic-release 需要完整历史
+          fetch-depth: 0
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
@@ -43,6 +43,13 @@ jobs:
         id: changelog
         run: pnpm run changelog
 
+      - name: Show computed version
+        run: |
+          echo "Computed version: ${{ steps.changelog.outputs.version }}"
+
+      - name: Sync version to package.json files
+        run: pnpm tsx scripts/sync-version.ts "${{ steps.changelog.outputs.version }}"
+
       - name: Commit and Push Changelog
         run: |
           git config --global user.name 'github-actions[bot]'
@@ -50,6 +57,17 @@ jobs:
           git add CHANGELOG.md
           git diff --staged --quiet || git commit -m "chore(release): update changelog [skip ci]"
           git push
+
+      - name: Create tag
+        run: |
+          git tag "${{ steps.changelog.outputs.tag }}" || echo "Tag exists"
+          git push origin "${{ steps.changelog.outputs.tag }}" || echo "Tag already pushed"
+
+      - name: Publish to npm
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+          working-directory: packages/feature-flag-plugin
+        run: npm publish --access public
 
       - name: Create GitHub Release
         uses: actions/create-release@v1

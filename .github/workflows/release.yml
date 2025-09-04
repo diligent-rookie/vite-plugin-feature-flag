@@ -48,7 +48,7 @@ jobs:
           echo "Computed version: ${{ steps.changelog.outputs.version }}"
 
       - name: Sync version to package.json files
-        run: pnpm tsx scripts/sync-version.ts "${{ steps.changelog.outputs.version }}"
+        run: pnpm run version "${{ steps.changelog.outputs.version }}"
 
       - name: Commit and Push Changelog
         run: |

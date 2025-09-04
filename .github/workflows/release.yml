@@ -64,9 +64,9 @@ jobs:
           git push origin "${{ steps.changelog.outputs.tag }}" || echo "Tag already pushed"
 
       - name: Publish to npm
+        working-directory: packages/feature-flag-plugin
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-          working-directory: packages/feature-flag-plugin
         run: npm publish --access public
 
       - name: Create GitHub Release

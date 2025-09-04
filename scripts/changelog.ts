@@ -260,7 +260,7 @@ function main() {
   if (ghOutput) {
     const out = [
       `version=${nextVersion}`,
-      `changelog=${formattedEntry}`,
+      `changelog<<EOF\n${formattedEntry}\nEOF`,
       `tag=${nextVersion}`
     ].join('\n');
     appendFileSync(ghOutput, out + '\n');

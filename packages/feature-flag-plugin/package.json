@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-feature-flag",
-  "version": "1.0.0-alpha.2",
+  "version": "1.0.0",
   "description": "A Vite plugin for managing feature flags in your code",
   "main": "dist/index.cjs",
   "module": "dist/index.mjs",

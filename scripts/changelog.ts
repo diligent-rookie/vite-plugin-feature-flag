@@ -1,6 +1,9 @@
 import { execSync } from 'child_process';
 import { writeFileSync, readFileSync, existsSync, appendFileSync } from 'fs';
-import { join } from 'path';
+import { join, resolve } from 'path';
+
+const pkgPath = resolve(process.cwd(), 'package.json');
+const pkg = JSON.parse(readFileSync(pkgPath, 'utf8'));
 
 interface Commit {
   hash: string;
@@ -103,41 +106,6 @@ function categorizeCommits(commits: Commit[]): Record<string, Commit[]> {
   }
 
   return categorized;
-}
-
-function calculateNextVersion(latestTag: string | null, commits: Commit[]): string {
-  if (!latestTag) return 'v1.0.0';
-
-  const raw = latestTag.startsWith('v') ? latestTag.substring(1) : latestTag;
-  // 去掉预发布/构建信息，例如 1.2.3-beta.1+build.5 -> 1.2.3
-  const base = raw.split('-')[0].split('+')[0];
-
-  const parts = base.split('.');
-  if (parts.length !== 3) {
-    throw new Error(`Invalid version format: ${latestTag}`);
-  }
-
-  const major = Number(parts[0]);
-  const minor = Number(parts[1]);
-  const patch = Number(parts[2]);
-
-  if ([major, minor, patch].some(n => Number.isNaN(n))) {
-    throw new Error(`Invalid version numbers after normalization: ${latestTag}`);
-  }
-
-  const hasFeatures = commits.some(commit => commit.type === 'feat');
-  const hasFixes = commits.some(commit => commit.type === 'fix');
-  const hasBreaking = commits.some(commit => commit.message.includes('!:'));
-
-  if (hasBreaking) {
-    return `v${major + 1}.0.0`;
-  } else if (hasFeatures) {
-    return `v${major}.${minor + 1}.0`;
-  } else if (hasFixes) {
-    return `v${major}.${minor}.${patch + 1}`;
-  }
-
-  return `v${major}.${minor}.${patch}`;
 }
 
 function generateChangelogEntry(version: string, commits: Commit[]): ChangelogEntry {
@@ -250,7 +218,7 @@ function main() {
     return;
   }
 
-  const nextVersion = calculateNextVersion(latestTag, commits);
+  const nextVersion = pkg.version;
   const changelogEntry = generateChangelogEntry(nextVersion, commits);
   const formattedEntry = formatChangelogEntry(changelogEntry);
 

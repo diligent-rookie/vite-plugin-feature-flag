@@ -63,12 +63,31 @@ export default App;
 
 ## 配置项
 
-| 属性    | 类型                           | 描述                         |
-| ------- | ------------------------------ | ---------------------------- |
-| enforce | `'pre' \| 'post'`              | 指定插件执行的顺序阶段       |
-| include | `string \| string[] \| RegExp` | 指定需要处理的文件或目录路径 |
-| exclude | `string \| string[] \| RegExp` | 指定需要排除的文件或目录路径 |
-| rules   | `Rule[]`                       | 功能开关规则数组             |
+| 属性    | 类型                           | 默认值                               | 描述                         |
+| ------- | ------------------------------ | ------------------------------------ | ---------------------------- |
+| enforce | `'pre' \| 'post'`              | `'pre'`                              | 指定插件执行的顺序阶段       |
+| include | `string \| string[] \| RegExp` | `/\.(jsx?\|tsx?\|less\|css\|html)$/` | 指定需要处理的文件或目录路径 |
+| exclude | `string \| string[] \| RegExp` | -                                    | 指定需要排除的文件或目录路径 |
+| rules   | `Rule[]`                       | 见下方                               | 功能开关规则数组             |
+
+rules 默认值
+
+```javascript
+[
+  {
+    rule: true,
+    start: '// @delete-start',
+    end: '// @delete-end',
+    fileTypes: ['jsx', 'tsx', 'js', 'ts', 'css', 'less'],
+  },
+  {
+    rule: true,
+    start: '{/* @delete-start */}',
+    end: '{/* @delete-end */}',
+    fileTypes: ['jsx', 'tsx'],
+  },
+];
+```
 
 ### Rule
 

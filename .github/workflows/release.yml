@@ -54,7 +54,7 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git add CHANGELOG.md
+          git add CHANGELOG.md package.json packages/feature-flag-plugin/package.json
           git diff --staged --quiet || git commit -m "chore(release): update changelog [skip ci]"
           git push
 
@@ -62,12 +62,6 @@ jobs:
         run: |
           git tag "${{ steps.changelog.outputs.tag }}" || echo "Tag exists"
           git push origin "${{ steps.changelog.outputs.tag }}" || echo "Tag already pushed"
-
-      - name: Publish to npm
-        working-directory: packages/feature-flag-plugin
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
-        run: npm publish --access public
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
